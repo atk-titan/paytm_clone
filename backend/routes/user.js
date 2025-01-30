@@ -20,7 +20,7 @@ userRouter.post("/signup", signupValidation ,async (req,res)=>{
         
         const checker = await User.findOne({UserName:user.UserName});
         if(checker){
-            res.status(411).json({
+            return res.status(411).json({
                 message:"email already taken"
             })
         }
@@ -34,14 +34,26 @@ userRouter.post("/signup", signupValidation ,async (req,res)=>{
             token:token
         });
     } catch (error) {
-        console.error("error while creating a new user"+err);
+        console.error("Error while creating a new user:", error);
+        return res.status(500).json({ message: "Internal server error" });
     }
 });
 
 userRouter.post("/signin", signinValidation ,async (req,res)=>{
     try{
-        const payload = await User.findOne({UserName:req.body.UserName})
-        const token = jwt.sign({userId:payload._id},jwt_secret)
+        const payload = await User.findOne({UserName:req.body.UserName});
+
+        if (!payload) {
+            return res.status(404).json({ msg: "User not found" });
+        }        
+
+        const checker = await bcrypt.compare(req.body.password,payload.password);
+
+        if (!checker) {
+            return res.status(401).json({ msg: "Incorrect password" });
+        }        
+
+        const token = jwt.sign({userId:payload._id},jwt_secret);
 
         res.status(200).json({
             userId: payload._id,

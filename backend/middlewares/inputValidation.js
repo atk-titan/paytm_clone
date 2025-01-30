@@ -15,7 +15,7 @@ const signupValidation=(req,res,next)=>{
         console.log('input validated');
         next();
     }
-    res.status(401).json({message:"incoorect input"});
+    return res.status(401).json({message:"incoorect input"});
 }
 
 const signinValidation= (req,res,next)=>{
@@ -33,7 +33,7 @@ const signinValidation= (req,res,next)=>{
         console.log('input validated');
         next();
     }
-    res.status(401).json({message:"incoorect input"});
+    return res.status(401).json({message:"incoorect input"});
 }
 
 module.exports={signupValidation,signinValidation};
