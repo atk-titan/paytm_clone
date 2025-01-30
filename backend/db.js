@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const mongo = require("mongoose");
 require("dotenv").config();
 
@@ -12,6 +13,16 @@ const userSchema = new mongo.Schema({
     password: {type: String , required:true , trim: true , minLength: 6 },
 })
 
-const Users = mongo.model("users",userSchema);
+const accountSchema = new mongo.Schema({
+    UserId: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+    Amount: {type:Number , default: 0 , required: true}
+})
 
-module.exports = Users;
+const Users = mongo.model("Users",userSchema);
+const Accounts = mongo.model("Accounts",accountSchema)
+
+module.exports = {
+    Users,
+    Accounts
+};
