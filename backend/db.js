@@ -6,6 +6,7 @@ mongo.connect(process.env.MONGO_URL)
     .catch((err)=>console.log("some error occured with connection : ",err))
 
 const userSchema = new mongo.Schema({
+    UserName : {type: String , required:true , trim: true , maxLength: 50},
     FirstName: {type: String , required:true , trim: true , maxLength: 50},
     LastName: {type: String , required:true , trim: true , maxLength: 50},
     password: {type: String , required:true , trim: true , minLength: 6 },
@@ -13,4 +14,4 @@ const userSchema = new mongo.Schema({
 
 const Users = mongo.model("users",userSchema);
 
-model.exports = Users;
+module.exports = Users;
