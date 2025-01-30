@@ -1,9 +1,10 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const {jwt_secret} = require('../config')
+const {jwt_secret} = require('../config');
+const auth = require("../middlewares/auth");
 
-const {signupValidation,signinValidation} = require('../middlewares/inputValidation');
+const {signupValidation,signinValidation,updateValidation} = require('../middlewares/inputValidation');
 
 const User = require("../db");
 
@@ -61,6 +62,52 @@ userRouter.post("/signin", signinValidation ,async (req,res)=>{
         });
     }catch(err){
         console.error(err);
+    }
+});
+
+userRouter.put("/", auth , updateValidation , async (req,res)=>{
+    try {
+        if (req.user.UserName !== req.body.UserName) {
+            return res.status(403).json({ msg: "Unauthorized: You can only update your own profile" });
+        }        
+
+        await User.updateOne({UserName:req.body.UserName},req.body);
+        return res.status(200).json({msg : "updated successfully"});
+
+    }catch (error) {
+        console.error("Error updating user:", error);
+        return res.status(500).json({ msg: "Internal server error" });
+    }    
+});
+
+userRouter.get("/bulk",auth,async (req,res)=>{
+    try {
+        const filter = req.query.filter || "";
+
+        const users = await User.find({
+            $or:[
+                {
+                    FirstName:{
+                        "$regex":filter
+                    }
+                },{
+                    LastName:{
+                        "$regex":filter
+                    }
+                }
+            ]
+        })
+
+        return res.status(200).json({
+            user:users.map((user)=>({
+                UserName:user.UserName,
+                FirstName:user.FirstName,
+                LastName:user.LastName,
+                _id:user._id
+            }))
+        })
+    } catch (error) {
+        console.error(error);
     }
 })
 

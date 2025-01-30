@@ -21,8 +21,6 @@ const signupValidation=(req,res,next)=>{
 const signinValidation= (req,res,next)=>{
     const userSchema = zod.object({
         Username: zod.string().email(),
-        FirstName: zod.string().max(50),
-        LastName: zod.string().max(50),
         password: zod.string().min(6),
     });
     
@@ -36,4 +34,21 @@ const signinValidation= (req,res,next)=>{
     return res.status(401).json({message:"incoorect input"});
 }
 
-module.exports={signupValidation,signinValidation};
+const updateValidation = (req,res,next) =>{
+    const userSchema = zod.object({
+        FirstName: zod.string().max(50).optional(),
+        LastName: zod.string().max(50).optional(),
+        password: zod.string().min(6).optional(),
+    });
+
+    const user = req.body;
+    const valid = userSchema.safeParse(user);
+
+    if(valid.success){
+        console.log('input validated');
+        next();
+    }
+    return res.status(401).json({message:"incoorect input"});    
+}
+
+module.exports={signupValidation,signinValidation,updateValidation};
