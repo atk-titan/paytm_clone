@@ -14,9 +14,8 @@ const userSchema = new mongo.Schema({
 })
 
 const accountSchema = new mongo.Schema({
-    UserId: mongoose.Schema.Types.ObjectId,
-    ref: "Users",
-    Balance: {type:Number , default: 0 , required: true}
+    UserId: {type: mongoose.Schema.Types.ObjectId,ref: "Users"},
+    Balance: {type: Number , default: 0 , required: true}
 })
 
 const Users = mongo.model("Users",userSchema);

@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../middlewares/auth');
 const {Users,Accounts} = require("../db");
-const {tranferValidation} = require("../middlewares/inputValidation")
+const {transferValidation} = require("../middlewares/inputValidation")
 
 const AccountRouter = express.Router();
 

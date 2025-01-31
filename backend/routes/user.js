@@ -73,11 +73,12 @@ UserRouter.post("/signin", signinValidation ,async (req,res)=>{
 
 UserRouter.put("/", auth , updateValidation , async (req,res)=>{
     try {
+        console.log(req.user.UserName);
         if (req.user.UserName !== req.body.UserName) {
             return res.status(403).json({ msg: "Unauthorized: You can only update your own profile" });
         }        
 
-        await User.updateOne({UserName:req.body.UserName},req.body);
+        await Users.updateOne({UserName:req.body.UserName},req.body);
         return res.status(200).json({msg : "updated successfully"});
 
     }catch (error) {
@@ -115,6 +116,6 @@ UserRouter.get("/bulk",auth,async (req,res)=>{
     } catch (error) {
         console.error(error);
     }
-})
+});
 
 module.exports = UserRouter;
