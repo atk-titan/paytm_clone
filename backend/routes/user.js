@@ -6,11 +6,12 @@ const auth = require("../middlewares/auth");
 
 const {signupValidation,signinValidation,updateValidation} = require('../middlewares/inputValidation');
 
-const User = require("../db");
+const {Users,Accounts} = require("../db");
+const { rand } = require('elliptic');
 
-const userRouter = express.Router();
+const UserRouter = express.Router();
 
-userRouter.post("/signup", signupValidation ,async (req,res)=>{
+UserRouter.post("/signup", signupValidation ,async (req,res)=>{
     try {
         const user = {
             UserName: req.body.UserName,
@@ -19,14 +20,19 @@ userRouter.post("/signup", signupValidation ,async (req,res)=>{
             password: await bcrypt.hash(req.body.password,10),
         };
         
-        const checker = await User.findOne({UserName:user.UserName});
+        const checker = await Users.findOne({UserName:user.UserName});
         if(checker){
             return res.status(411).json({
                 message:"email already taken"
             })
         }
 
-        const payload = await User.create(user);
+        const payload = await Users.create(user);
+
+        await Accounts.create({
+            UserId: payload._id,
+            Balance: Math.floor(Math.random()*100000)+1
+        });
 
         const token = jwt.sign({userId:payload._id},jwt_secret);
 
@@ -40,9 +46,9 @@ userRouter.post("/signup", signupValidation ,async (req,res)=>{
     }
 });
 
-userRouter.post("/signin", signinValidation ,async (req,res)=>{
+UserRouter.post("/signin", signinValidation ,async (req,res)=>{
     try{
-        const payload = await User.findOne({UserName:req.body.UserName});
+        const payload = await Users.findOne({UserName:req.body.UserName});
 
         if (!payload) {
             return res.status(404).json({ msg: "User not found" });
@@ -65,7 +71,7 @@ userRouter.post("/signin", signinValidation ,async (req,res)=>{
     }
 });
 
-userRouter.put("/", auth , updateValidation , async (req,res)=>{
+UserRouter.put("/", auth , updateValidation , async (req,res)=>{
     try {
         if (req.user.UserName !== req.body.UserName) {
             return res.status(403).json({ msg: "Unauthorized: You can only update your own profile" });
@@ -80,11 +86,11 @@ userRouter.put("/", auth , updateValidation , async (req,res)=>{
     }    
 });
 
-userRouter.get("/bulk",auth,async (req,res)=>{
+UserRouter.get("/bulk",auth,async (req,res)=>{
     try {
         const filter = req.query.filter || "";
 
-        const users = await User.find({
+        const users = await Users.find({
             $or:[
                 {
                     FirstName:{
@@ -111,4 +117,4 @@ userRouter.get("/bulk",auth,async (req,res)=>{
     }
 })
 
-module.exports = userRouter;
+module.exports = UserRouter;
