@@ -51,4 +51,17 @@ const updateValidation = (req,res,next) =>{
     return res.status(401).json({message:"incoorect input"});    
 }
 
-module.exports={signupValidation,signinValidation,updateValidation};
+const tranferValidation =(req,res,next) =>{
+    const transferSchema = zod.object({
+        to: zod.string().max(50).min(3),
+        amount: zod.number()
+    });
+
+    if(transferSchema.safeParse(req.body).success){
+        console.log("type validated");
+        next()
+    }
+    return res.status(401).json({message:"incoorect input"});
+}
+
+module.exports={signupValidation,signinValidation,updateValidation,tranferValidation};
