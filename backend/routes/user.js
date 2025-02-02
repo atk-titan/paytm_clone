@@ -73,8 +73,8 @@ UserRouter.post("/signin", signinValidation ,async (req,res)=>{
 
 UserRouter.put("/", auth , updateValidation , async (req,res)=>{
     try {
-        console.log(req.user.UserName);
-        if (req.user.UserName !== req.body.UserName) {
+        const user = await Users.findOne({UserName:req.body.UserName});
+        if (req.user.userId !== user._id.toString()) {
             return res.status(403).json({ msg: "Unauthorized: You can only update your own profile" });
         }        
 

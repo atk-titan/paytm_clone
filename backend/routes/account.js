@@ -7,7 +7,8 @@ const AccountRouter = express.Router();
 
 AccountRouter.get('/balance',auth,async (req,res)=>{
     try{
-        const balance = await Accounts.findOne({UserId:req.user.UserId});
+        console.log(req.user.userId);
+        const balance = await Accounts.findOne({UserId:req.user.userId});
 
         return res.status(200).json({balance:balance});
     }catch(err){
@@ -24,7 +25,7 @@ AccountRouter.post('/transfer', auth, transferValidation, async (req, res) => {
         const { amount, to } = req.body;
 
         // Fetch sender's account
-        const senderAccount = await Accounts.findOne({ UserId: req.user.UserId }).session(session);
+        const senderAccount = await Accounts.findOne({ UserId: req.user.userId }).session(session);
 
         if (!senderAccount || senderAccount.Balance < amount) {
             await session.abortTransaction();
@@ -45,7 +46,7 @@ AccountRouter.post('/transfer', auth, transferValidation, async (req, res) => {
 
         // Deduct amount from sender
         await Accounts.updateOne(
-            { UserId: req.user.UserId },
+            { UserId: req.user.userId },
             { $inc: { Balance: -amount } },
             { session }
         );
