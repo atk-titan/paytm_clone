@@ -40,6 +40,9 @@ const SignUp = () => {
                 LastName:lastName,
                 password:password
               });
+              if(response.data.token){
+                Navigate('/dashboard');
+              }
               localStorage.setItem("token",response.data.token);
             }}/>
           </div>

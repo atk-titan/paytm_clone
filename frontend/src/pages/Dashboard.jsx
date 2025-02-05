@@ -6,6 +6,9 @@ import Users from '../components/Users';
 
 const Dashboard = () => {
   const Navigate = useNavigate();
+  let list =[{
+    
+  }]
 
   return (
     <div className='p-7'>
