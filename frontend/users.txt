@@ -1,6 +1,0 @@
-{UserName: "gmane@gmail.com", FirstName: "gaurav", LastName: "mane", password: "gaurav1234"},
-{UserName: "gmaneeee@gmail.com", FirstName: "gaurang", LastName: "maneeee", password: "gaurav1234"}
-{UserName: "sanji@gmail.com", FirstName: "sanjivani", LastName: "mane", password: "sanjivani"}
-{UserName: "om@gmail.com", FirstName: "om", LastName: "pathak", password: "om12345678"}
-{UserName: "rohit@gmail.com", FirstName: "rohit", LastName: "chall", password: "om12345678"}
-{UserName: "chall@gmail.com", FirstName: "rohit", LastName: "chall", password: "om12345678"}
